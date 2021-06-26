@@ -1,4 +1,4 @@
- /**
+/**
  *  Copyright 2016 Eric Maycock
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -255,7 +255,7 @@ def updated()
     state.wakeCount = 1
     cmds = []
     sendEvent(name: "checkInterval", value: 2 * 60 * 12 * 60 + 5 * 60, displayed: false, data: [protocol: "zwave", hubHardwareId: device.hub.hardwareID])
-    sendEvent(name: "numberOfButtons", value: wallmoteQuad ? 12 : 6, displayed: true)
+    sendEvent(name: "numberOfButtons", value: wallmoteButtons.toInteger() * 3, displayed: true)
     sendEvent(name: "needUpdate", value: device.currentValue("needUpdate"), displayed:false, isStateChange: true)
     if (cmds != []) response(commands(cmds))
 }
@@ -271,7 +271,7 @@ def configure() {
         "4": 3
     ]
     state.currentProperties = [:]
-    sendEvent(name: "numberOfButtons", value: wallmoteQuad ? 12 : 6, displayed: true)
+    sendEvent(name: "numberOfButtons", value: wallmoteButtons.toInteger() * 3, displayed: true)
         cmds.add(zwave.versionV1.versionGet())
     if (!state.lastBatteryReport || (now() - state.lastBatteryReport) / 60000 >= 60 * 24)
     {
@@ -355,7 +355,7 @@ def convertParam(number, value) {
 }
 
 private def logging(message) {
-    if (logEnable == null || logEnable == "true") log.debug "$message"
+    if (logEnable == null || logEnable == true) log.debug "$message"
 }
 
 /**
@@ -453,3 +453,4 @@ void sendToDevice(hubitat.zwave.Command cmd) {
 void sendToDevice(String cmd) {
     sendHubCommand(new hubitat.device.HubAction(secureCommand(cmd), hubitat.device.Protocol.ZWAVE))
 }
+
